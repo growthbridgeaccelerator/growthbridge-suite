@@ -22,6 +22,7 @@ import {
   Users,
   UsersRound,
   Workflow,
+  UtensilsCrossed,
   X,
   Zap,
 } from "lucide-react";
@@ -97,6 +98,12 @@ const navItems: NavItem[] = [
   { href: "/broadcasts", label: "Broadcasts", icon: Radio },
   { href: "/automations", label: "Automations", icon: Zap },
   { href: "/flows", label: "Flows", icon: Workflow, beta: true },
+  {
+  href: "/restaurant",
+  label: "Restaurant",
+  icon: UtensilsCrossed,
+  beta: true,
+},
 ];
 
 const bottomNavItems = [

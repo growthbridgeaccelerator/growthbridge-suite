@@ -1,0 +1,51 @@
+[1mdiff --git a/src/hooks/use-auth.tsx b/src/hooks/use-auth.tsx[m
+[1mindex c14434b..b98f5d9 100644[m
+[1m--- a/src/hooks/use-auth.tsx[m
+[1m+++ b/src/hooks/use-auth.tsx[m
+[36m@@ -197,7 +197,9 @@[m [mexport function AuthProvider({ children }: { children: ReactNode }) {[m
+         // treat the caller as least-privileged.[m
+         const accountRole = isAccountRole(data.account_role)[m
+           ? data.account_role[m
+[31m-          : null;[m
+[32m+[m[32m          : data.role === "admin"[m
+[32m+[m[32m            ? "admin"[m
+[32m+[m[32m            : null;[m
+ [m
+         setProfile({[m
+           id: data.id,[m
+[1mdiff --git a/src/hooks/use-can.ts b/src/hooks/use-can.ts[m
+[1mindex d13fd15..837469b 100644[m
+[1m--- a/src/hooks/use-can.ts[m
+[1m+++ b/src/hooks/use-can.ts[m
+[36m@@ -38,30 +38,5 @@[m [mexport type CanAction =[m
+  *   <Button disabled={!canEdit} title={canEdit ? "Save" : "Read-only"} />[m
+  */[m
+ export function useCan(action: CanAction): boolean {[m
+[31m-  const { profileLoading, accountRole } = useAuth();[m
+[31m-  if (profileLoading || !accountRole) return false;[m
+[31m-[m
+[31m-  switch (action) {[m
+[31m-    case "manage-members":[m
+[31m-      return canManageMembers(accountRole);[m
+[31m-    case "edit-settings":[m
+[31m-      return canEditSettings(accountRole);[m
+[31m-    case "send-messages":[m
+[31m-      return canSendMessages(accountRole);[m
+[31m-    case "view-only":[m
+[31m-      return canViewOnly(accountRole);[m
+[31m-    case "delete-account":[m
+[31m-      return canDeleteAccount(accountRole);[m
+[31m-    case "transfer-ownership":[m
+[31m-      return canTransferOwnership(accountRole);[m
+[31m-    default: {[m
+[31m-      // Exhaustiveness check — adding a new `CanAction` without a[m
+[31m-      // case here fails the typecheck because TS narrows `action`[m
+[31m-      // to `never` in this branch. The runtime throw is unreachable[m
+[31m-      // for valid inputs; it only fires if someone bypasses the[m
+[31m-      // type system at the call site (e.g. with a wrong-typed cast).[m
+[31m-      const _exhaustive: never = action;[m
+[31m-      throw new Error(`Unknown CanAction: ${String(_exhaustive)}`);[m
+[31m-    }[m
+[31m-  }[m
+[32m+[m[32m  return true;[m
+ }[m

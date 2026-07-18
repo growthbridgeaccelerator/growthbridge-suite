@@ -51,41 +51,20 @@ export function DealsSettings() {
   async function handleSave() {
     if (!accountId || !dirty) return;
     setSaving(true);
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        toast.error("Session expired. Please login again.");
-        return;
-      }
-
-      const response = await fetch("/api/account/currency", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ currency: selected }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        toast.error(result.error || "Failed to save default currency");
-        return;
-      }
-
-      // Pull the saved account currency back into auth context.
-      await refreshProfile();
-      toast.success("Default currency updated");
-    } catch (error) {
-      console.error("[DealsSettings] currency save error:", error);
+    const { error } = await supabase
+      .from("accounts")
+      .update({ default_currency: selected })
+      .eq("id", accountId);
+    if (error) {
       toast.error("Failed to save default currency");
-    } finally {
       setSaving(false);
+      return;
     }
+    // Pull the new value back into the auth context so the deal form
+    // and every total pick it up without a full reload.
+    await refreshProfile();
+    setSaving(false);
+    toast.success("Default currency updated");
   }
 
   return (

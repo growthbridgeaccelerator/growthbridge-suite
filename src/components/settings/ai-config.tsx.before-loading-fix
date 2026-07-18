@@ -96,21 +96,10 @@ export function AiConfig() {
   }, []);
 
   useEffect(() => {
-    if (profileLoading) return;
-
-    if (!accountId) {
-      setLoading(false);
-      return;
-    }
-
-    if (loadedAccountIdRef.current === accountId) {
-      setLoading(false);
-      return;
-    }
-
+    if (!accountId || loadedAccountIdRef.current === accountId) return;
     loadedAccountIdRef.current = accountId;
     void fetchConfig();
-  }, [accountId, profileLoading, fetchConfig]);
+  }, [accountId, fetchConfig]);
 
   // Swap the model default when the provider changes, unless the user
   // typed a custom model.
