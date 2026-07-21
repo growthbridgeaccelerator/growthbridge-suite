@@ -18,13 +18,14 @@ export default function MenuItemForm({
   item,
   onSaved,
   onCancel,
-}: Props) {
+}: Props): import("react/jsx-runtime").JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [isVeg, setIsVeg] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function MenuItemForm({
   setDescription(item.description ?? "");
   setPrice(String(item.price));
   setIsVeg(item.is_veg);
+  setIsAvailable(item.is_available);
 }, [item]);
 
   async function loadCategories() {
@@ -80,6 +82,7 @@ export default function MenuItemForm({
         description,
         price: Number(price),
         is_veg: isVeg,
+        is_available: isAvailable,
       }),
     });
 
@@ -95,6 +98,7 @@ export default function MenuItemForm({
     setDescription("");
     setPrice("");
     setIsVeg(true);
+    setIsAvailable(true);
 
     alert(item ? "Menu Item Updated" : "Menu Item Added");
 
@@ -108,7 +112,7 @@ export default function MenuItemForm({
   }
 }
   return (
-    <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm">
+    <div className="space-y-4 rounded-lg border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
       <h2 className="text-xl font-semibold">
         {item ? "Edit Menu Item" : "Add Menu Item"}
       </h2>
@@ -125,16 +129,22 @@ export default function MenuItemForm({
       <div>
         <label className="mb-1 block text-sm font-medium">Category</label>
         <select
-          className="w-full rounded border px-3 py-2"
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
         >
-          <option value="">Select Category</option>
+          <option value="" className="bg-zinc-900 text-white">
+  Select Category
+</option>
 
           {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+            <option
+              key={cat.id}
+              value={cat.id}
+              className="bg-zinc-900 text-white"
+            >
+               {cat.name}
+</option>
           ))}
         </select>
       </div>
@@ -167,6 +177,15 @@ export default function MenuItemForm({
         />
         Vegetarian
       </label>
+
+       <label className="flex items-center gap-2">
+  <input
+    type="checkbox"
+    checked={isAvailable}
+    onChange={(e) => setIsAvailable(e.target.checked)}
+  />
+  Available
+</label>
 
       <div className="flex gap-3">
         <button

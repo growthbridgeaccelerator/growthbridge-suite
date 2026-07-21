@@ -37,6 +37,58 @@ export default function MenuItemsPage() {
 
     setLoading(false);
   }
+async function handleDelete(id: string) {
+  const ok = window.confirm("Are you sure you want to delete this menu item?");
+
+  if (!ok) return;
+
+  try {
+    const res = await fetch(`/api/restaurant/menu-items/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to delete menu item");
+    }
+
+    loadItems();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete menu item.");
+  }
+}
+
+async function handleToggle(
+  item: MenuItem,
+  updates: Partial<MenuItem>
+) {
+  const res = await fetch(`/api/restaurant/menu-items/${item.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      category_id: item.category_id,
+      is_veg:
+        updates.is_veg !== undefined
+          ? updates.is_veg
+          : item.is_veg,
+      is_available:
+        updates.is_available !== undefined
+          ? updates.is_available
+          : item.is_available,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update menu item");
+  }
+
+  loadItems();
+}
 
   useEffect(() => {
     loadItems();
@@ -67,10 +119,20 @@ export default function MenuItemsPage() {
         </div>
       ) : (
         <MenuItemList
-          items={items}
-          onEdit={setSelectedItem}
-          onDelete={loadItems}
-        />
+  items={items}
+  onEdit={setSelectedItem}
+  onDelete={handleDelete}
+  onToggleVeg={(item) =>
+    handleToggle(item, {
+      is_veg: !item.is_veg,
+    })
+  }
+  onToggleAvailability={(item) =>
+    handleToggle(item, {
+      is_available: !item.is_available,
+    })
+  }
+/>
       )}
     </div>
   );

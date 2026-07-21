@@ -78,6 +78,8 @@ export async function POST(req: Request) {
 
         category_id,
 
+        item_code: `ITEM-${Date.now()}`,
+
         name,
         description,
 

@@ -57,23 +57,25 @@ export async function PATCH(
     const body = await req.json();
 
     const {
-      name,
-      category_id,
-      description,
-      price,
-      is_veg,
-    } = body;
+  name,
+  category_id,
+  description,
+  price,
+  is_veg,
+  is_available,
+} = body;
 
     const { data, error } = await supabase
       .from("menu_items")
       .update({
-        name,
-        category_id,
-        description,
-        price,
-        is_veg,
-        updated_at: new Date().toISOString(),
-      })
+  name,
+  category_id,
+  description,
+  price,
+  is_veg,
+  is_available,
+  updated_at: new Date().toISOString(),
+})
       .eq("id", id)
       .eq("account_id", accountId)
       .select()
