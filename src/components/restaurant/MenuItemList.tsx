@@ -7,6 +7,7 @@ type Item = {
   price: number;
   is_veg: boolean;
   is_available: boolean;
+  category_id: string;
   menu_categories?: {
     name: string;
   };
@@ -14,9 +15,15 @@ type Item = {
 
 type Props = {
   items: Item[];
+  onEdit: (item: Item) => void;
+  onDelete: () => void;
 };
 
-export default function MenuItemList({ items }: Props) {
+export default function MenuItemList({
+  items,
+  onEdit,
+  onDelete,
+}: Props) {
   if (items.length === 0) {
     return (
       <div className="rounded-xl border bg-white p-10 text-center">
